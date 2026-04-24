@@ -1,0 +1,192 @@
+{
+  "personal": {
+    "name": "Davi Almeida",
+    "location": "Montreal, QC, Canada",
+    "email": "davialmeida1996@gmail.com",
+    "phone": "(514) 914-4064",
+    "linkedin": "linkedin.com/in/daviao",
+    "github": "github.com/davicanada",
+    "website": "davianalyst.com"
+  },
+  "work_authorization": {
+    "current_status": "work_permit",
+    "current_permit_expires": "2026-11-19",
+    "pr_status": "pr_approved_copr_pending",
+    "expected_pr_date": "2026-Q2",
+    "resume_statement": "Authorized to work in Canada — permanent residence approved, COPR pending."
+  },
+  "languages": [
+    "English (Professional / C1)",
+    "French (Upper Intermediate / B2)",
+    "Portuguese (native / C2)",
+    "Spanish (Upper Intermediate / B2)"
+  ],
+  "target_roles": [
+    {"track": "analytics_engineer", "weight": 0.4, "titles": ["Junior Analytics Engineer", "BI Developer", "Data Analyst", "Reporting Analyst"]},
+    {"track": "ops_data_analyst", "weight": 0.3, "titles": ["Operations Data Analyst", "Supply Chain Data Analyst", "Manufacturing Data Analyst", "ERP Analyst"]},
+    {"track": "automation_dev", "weight": 0.2, "titles": ["Python Developer Junior", "Automation Engineer Junior", "RPA Developer"]},
+    {"track": "data_engineer", "weight": 0.1, "titles": ["Junior Data Engineer", "AI Engineer Junior"]}
+  ],
+  "disqualifiers": {
+    "security_clearance_required": true,
+    "citizen_only": true,
+    "us_only": true,
+    "on_site_required": true
+  },
+  "preferences": {
+    "remote_only": true,
+    "country": "Canada",
+    "employment_types_accepted": ["full-time", "part-time", "contract", "temporary", "internship"],
+    "salary_min_cad": null,
+    "provinces_ok": "any"
+  },
+  "skills": {
+    "languages_code": ["SQL", "Python", "DAX", "M (Power Query)", "VBA", "JavaScript (basic)"],
+    "data_bi": ["Power BI", "Power Query", "Excel (advanced)", "Pandas", "OpenPyXL"],
+    "databases": ["PostgreSQL", "Supabase (RLS, triggers, auth)", "SharePoint Lists", "NetSuite ERP"],
+    "automation": ["Playwright", "REST APIs", "Power Automate", "VBA macros", "GitHub Actions", "Streamlit"],
+    "cloud_platforms": ["Microsoft 365", "Power Platform", "Supabase", "Oracle NetSuite"],
+    "ai_tooling": ["LLM APIs (Groq, Anthropic)", "Prompt engineering", "AI-assisted development"],
+    "soft": ["Multilingual (EN, FR, PT, ES)", "Cross-border (BR/CA) experience", "Manufacturing/ERP domain"]
+  },
+  "experience": [
+    {
+      "company": "Otodata Wireless Network Inc.",
+      "title": "Documentation Technician",
+      "start": "2024-08",
+      "end": "present",
+      "location": "Montreal, QC",
+      "highlights": [
+        {
+          "summary": "Automated monthly AVL report in VBA, reducing 1h manual task to <1min for 200 vendors across two output formats (R&D and Production/PanaCIM MES).",
+          "tags": ["vba", "excel", "automation", "manufacturing", "reporting"]
+        },
+        {
+          "summary": "Built BOMinator, Excel/VBA ETL tool merging two NetSuite exports into an engineering-ready report covering recipe, manufacturers, MPNs, and alternate parts. Manages ~1,000 BOMs for 5 mechanical and electrical engineers.",
+          "tags": ["vba", "excel", "bom", "netsuite", "manufacturing", "etl"]
+        },
+        {
+          "summary": "Shipped contractor management app (Power Apps frontend + SharePoint backend) replacing CAD $600/month Airtable subscription, adding field-level edit control unavailable in native SharePoint. Self-taught Power Apps and Power Automate to deliver production app in one week.",
+          "tags": ["power_apps", "sharepoint", "power_automate", "cost_savings", "low_code"]
+        },
+        {
+          "summary": "Built Python/Playwright automation suite for bulk NetSuite operations (SKU creation, manufacturer updates, multi-currency pricing, translations, lead-time/MOQ fields) with Streamlit UI, handling ~10 SKUs per month with reduced transcription errors.",
+          "tags": ["python", "playwright", "streamlit", "netsuite", "automation", "web_scraping"]
+        },
+        {
+          "summary": "Built Power BI battery inventory forecasting dashboard using Power Query M, DAX measures, and seasonal averages for planning team.",
+          "tags": ["power_bi", "dax", "m_query", "forecasting", "analytics"]
+        },
+        {
+          "summary": "Leading in-progress SharePoint architecture redesign to unify fragmented team sites across Marketing, R&D, Customer Service, Production, NetSuite ERP, the online store, and CRM. Evaluating hub-site, SharePoint Framework, and data lakehouse approaches toward a single source of truth.",
+          "tags": ["sharepoint", "architecture", "data_platform", "spfx", "governance"]
+        },
+        {
+          "summary": "Maintain data governance for component master data, BOMs, and technical documentation, validating specs, drawings, and environmental certificates (RoHS, REACH, conflict minerals) for audit readiness.",
+          "tags": ["data_governance", "compliance", "master_data"]
+        }
+      ]
+    },
+    {
+      "company": "UAP Inc.",
+      "title": "Web Catalog Technician",
+      "start": "2023-08",
+      "end": "2023-10",
+      "location": "Longueuil, QC",
+      "highlights": [
+        {
+          "summary": "Queried, extracted, and transformed raw data from multiple databases to analyze customer interactions across sales channels and surface key product insights.",
+          "tags": ["sql", "data_analysis", "reporting", "product_analytics"]
+        },
+        {
+          "summary": "Integrated new product data into the company's transactional websites through a Product Information Management (PIM) system, ensuring consistent categorization and standardization.",
+          "tags": ["pim", "data_integration", "ecommerce", "master_data"]
+        },
+        {
+          "summary": "Cleansed and completed missing product attributes, improving catalog data quality across the transactional websites.",
+          "tags": ["data_cleansing", "data_quality", "master_data"]
+        }
+      ]
+    },
+    {
+      "company": "Locatrans Logistics and Transport",
+      "title": "Quality Control Intern",
+      "start": "2020-06",
+      "end": "2021-02",
+      "location": "Vitória, Brazil",
+      "highlights": [
+        {
+          "summary": "Built Excel and Power BI dashboards tracking daily fuel consumption, driver performance, and route efficiency across a fleet of ~20 vehicles (cars, van, bus).",
+          "tags": ["excel", "power_bi", "kpi", "logistics", "fleet"]
+        },
+        {
+          "summary": "Defined KPIs, monitored monthly, and presented findings to the team and CEO, translating raw consumption data into actionable recommendations for 20 drivers.",
+          "tags": ["kpi", "reporting", "stakeholder_communication"]
+        },
+        {
+          "summary": "Cleaned and analyzed operational records in Excel to support continuous improvement initiatives across the fleet.",
+          "tags": ["data_cleansing", "trend_analysis"]
+        }
+      ]
+    }
+  ],
+  "projects": [
+    {
+      "name": "Taskor",
+      "description": "Full-stack performance tracking app. Next.js + Supabase (PostgreSQL with row-level security) + Groq/Llama 3.3 for AI-assisted task review, tied to a 15-competency annual evaluation framework with supervisor one-on-one workflow and audit-trail timer.",
+      "stack": ["Next.js", "Supabase", "PostgreSQL", "Groq", "Llama 3.3", "RLS"],
+      "tags": ["full_stack", "llm", "supabase", "postgresql", "saas"]
+    },
+    {
+      "name": "Focus",
+      "description": "Multi-tenant school management platform for Brazilian schools, currently piloting with one institution for feedback ahead of public launch planned for 2027.",
+      "stack": ["multi-tenant", "Next.js", "Supabase", "PostgreSQL"],
+      "tags": ["full_stack", "saas", "multi_tenant", "supabase"]
+    },
+    {
+      "name": "Power BI Portfolio",
+      "description": "Public portfolio of Power BI dashboards covering financial, operational, and sales analytics scenarios. Live at davianalyst.com/power-bi.",
+      "stack": ["Power BI", "DAX", "Power Query M"],
+      "tags": ["power_bi", "dax", "analytics", "portfolio"]
+    },
+    {
+      "name": "Excel Fueling Control System",
+      "description": "VBA and pivot-table tool for data entry, visualization, and driver coordination, developed during the Locatrans role.",
+      "stack": ["Excel", "VBA", "pivot tables"],
+      "tags": ["excel", "vba", "logistics"]
+    },
+    {
+      "name": "School Management SQL Project",
+      "description": "PostgreSQL 17 + Supabase relational schema with student tracking, disciplinary records, and role-based access via Supabase Auth + RLS.",
+      "stack": ["PostgreSQL", "Supabase", "RLS", "SQL"],
+      "tags": ["sql", "postgresql", "database_design", "supabase"]
+    }
+  ],
+  "education": [
+    {
+      "institution": "FNAT — Foundation for Business, Analytics and Technology",
+      "credential": "Data Analytics and Applied Artificial Intelligence for Business",
+      "year": "Expected 2027-01",
+      "location": "Remote"
+    },
+    {
+      "institution": "Trebas Institute",
+      "credential": "ACS in Analytics, Big Data and Business Intelligence",
+      "year": "2023-09",
+      "location": "Montreal, QC"
+    },
+    {
+      "institution": "Federal Institute of Espírito Santo",
+      "credential": "B.Sc. Mechanical Engineering (recognized equivalent to a four-year Canadian Engineering degree)",
+      "year": "2022-05",
+      "location": "Vitória, Brazil"
+    }
+  ],
+  "certifications": [
+    "Google Data Analytics Professional Certificate, Coursera (2023)",
+    "Atlassian Agile Project Management Professional, Atlassian (2024)",
+    "Hashtag Excel Advanced Expertise, Hashtag Treinamentos (2024)",
+    "Master SQL Development, LinkedIn Learning (2023)",
+    "Learning Regular Expressions, LinkedIn Learning (2023)"
+  ]
+}

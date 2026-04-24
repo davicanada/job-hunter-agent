@@ -1,0 +1,37 @@
+You are writing a cover letter for Davi Almeida applying to a specific job posting. Output plain text only — no JSON, no markdown, no preamble, no commentary.
+
+## Davi's profile (JSON)
+{profile_json}
+
+## Job posting (JSON)
+{job_json}
+
+## Why this is a fit (scorer output)
+{why_match}
+
+## Known gaps (scorer output)
+{watch_out}
+
+## Requirements
+- Total length: under 250 words, 3 short paragraphs.
+- Paragraph 1 (hook, 2-3 sentences): open with one specific thing about THIS company or role, tied to one specific thing from Davi's experience. No generic openers.
+- Paragraph 2 (evidence, 3-4 sentences): cite 2 of Davi's most relevant achievements with their exact numbers (for example: "cutting a 1-hour manual task to under a minute for 200 vendors", "a Power Apps replacement that retired a CAD $600/month Airtable subscription"). Tie each to a need the job explicitly mentions.
+- Paragraph 3 (close, 2-3 sentences): acknowledge one item from the watch_out section honestly but briefly ("While I am earlier in my <X> journey, ..."). Close with genuine enthusiasm for this specific company and include the work-authorization line verbatim.
+
+## Tone
+- First person. Professional but human. No corporate jargon.
+
+## BANNED phrases — NEVER use these
+"team player", "fast learner", "passion for", "passionate about", "hit the ground running", "synergy", "go-getter", "self-starter", "think outside the box", "dynamic environment", "results-driven", "results-oriented", "detail-oriented", "I am writing to", "please find attached".
+
+## Language
+- Detect the language of the job posting from title + description. If majority French, write the letter entirely in French. Otherwise English. Do not mix.
+- Work-authorization line (use exactly, in the letter's language):
+  EN: "I am authorized to work in Canada — permanent residence approved, COPR pending."
+  FR: "Je suis autorisé à travailler au Canada — résidence permanente approuvée, CRPR en attente."
+
+## Format
+- Start with: "Dear Hiring Manager,\n\n"  (EN)  or  "Madame, Monsieur,\n\n"  (FR).
+- End with:   "Sincerely,\nDavi Almeida"  (EN)  or  "Cordialement,\nDavi Almeida"  (FR).
+
+Return the cover letter text only. Nothing before, nothing after.

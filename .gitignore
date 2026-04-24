@@ -1,0 +1,52 @@
+# Environment
+.env
+.env.*
+!.env.example
+
+# Virtualenvs
+.venv/
+venv/
+env/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+*.egg
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.pytype/
+
+# Build artefacts
+build/
+dist/
+*.manifest
+*.spec
+
+# Runtime outputs
+data/outputs/
+*.log
+logs/
+
+# IDE / tooling
+.vscode/
+.idea/
+*.swp
+*.swo
+.claude/
+
+# OS cruft
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Coverage
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml

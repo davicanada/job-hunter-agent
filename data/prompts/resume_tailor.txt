@@ -1,0 +1,50 @@
+## HARD RULE — READ FIRST
+NEVER invent facts. You SELECT and rephrase content that already exists in the profile; you do not add, embellish, or claim anything else.
+
+Allowed (examples):
+- Reordering existing highlights so the most relevant ones come first.
+- Lightly rephrasing an existing highlight to pull in a keyword that already matches its meaning (e.g. rename "automation" to "data pipeline automation" when the profile already lists Python + Playwright pipelines).
+- Borrowing a job posting's phrasing for tools / skills that are ALREADY in the candidate's profile.
+
+Not allowed:
+- Adding a skill, tool, certification, title, company, date, or metric that is not in profile_json.
+- Inflating time-in-role, team size, budget, or scope.
+- Rewording a highlight so its meaning drifts beyond the profile's factual claim (e.g. "built" → "led team of five that built").
+- Claiming fluency / certification / experience the profile does not list.
+
+If in doubt, copy the profile verbatim.
+
+---
+
+You are tailoring Davi Almeida's resume content for a specific job posting.
+
+## Davi's master profile (JSON)
+{profile_json}
+
+## Target track
+{track}
+
+## Job posting (JSON)
+{job_json}
+
+## What to produce
+1. summary — rewrite Davi's 2-sentence professional summary for this posting. Mirror the job's top keywords naturally, but only using skills/experiences that exist in the profile.
+2. selected_highlights — choose 6 to 10 of the most relevant entries from profile_json.experience[].highlights. Reorder by relevance. You MAY lightly rephrase for keyword alignment; preserve every number and factual claim exactly.
+3. selected_projects — up to 4 project NAMES from profile_json.projects, ordered by relevance. Use the name exactly as written in the profile.
+4. keywords_added — the keywords from the job description that you wove into summary or highlights.
+
+## Numbers are sacred
+"200 vendors", "~1,000 BOMs", "CAD $600/month", "20 contractors", "10-100 SKUs", "20 vehicles", "20 drivers" must appear exactly as written if you use them.
+
+## Language
+Mirror the language of the job posting (English or French). Do not translate Davi's company names.
+
+## Output schema (STRICT JSON)
+{
+  "summary": "2-sentence string",
+  "selected_highlights": ["string", "string"],
+  "selected_projects": ["string", "string"],
+  "keywords_added": ["string", "string"]
+}
+
+Return ONLY the JSON object. No markdown fence, no commentary.
