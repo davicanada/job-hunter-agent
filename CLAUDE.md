@@ -21,12 +21,16 @@ Python 3.12 locally, 3.11 in CI. `asyncio_mode = auto` in `pytest.ini` — async
 .venv/Scripts/python.exe -m pytest tests/test_scoring.py::test_prefilter_accepts_junior  # one test
 .venv/Scripts/python.exe -m pytest -m integration                 # hits real APIs (opt-in)
 
-.venv/Scripts/python.exe -m src.main                   # full cycle: fetch → score → write
+.venv/Scripts/python.exe -m src.main                   # full cycle: fetch → score → write → notify
 .venv/Scripts/python.exe -m src.main fetch             # fetch + persist only
 .venv/Scripts/python.exe -m src.main score             # score unscored jobs from last 48h
+.venv/Scripts/python.exe -m src.main score-all         # score every unprocessed job (capped at 20)
 .venv/Scripts/python.exe -m src.main rescore           # re-evaluate prefilter-skipped rows
+.venv/Scripts/python.exe -m src.main notify            # send unnotified applications via Telegram (respects DRY_RUN)
 .venv/Scripts/python.exe -m src.main providers         # print LLM chain + in-process status (no network)
 ```
+
+`DRY_RUN=true` makes the notify stage log what it would send without hitting api.telegram.org; useful for verifying wiring without flooding your chat.
 
 The `integration` marker is defined in `pytest.ini` and excluded from the default run. Every other test is pure Python / monkeypatched.
 
@@ -36,9 +40,9 @@ The `integration` marker is defined in `pytest.ini` and excluded from the defaul
 
 ### Pipeline stages
 
-`src/main.py` composes four stages into the cycle modes listed above:
+`src/main.py` composes five stages into the cycle modes listed above:
 
-1. **Fetch** — `src/sources/fetcher.py` fans out to 8 adapters in `src/sources/*.py` (RemoteOK, WeWorkRemotely, Remotive, WorkingNomads, Jobicy, Himalayas, LinkedIn RSS, Indeed RSS). Each adapter implements `BaseJobSource` from `src/sources/base.py` and emits `Job` models.
+1. **Fetch** — `src/sources/fetcher.py` fans out to all sources flagged `enabled=True` in `config/sources.py`. Currently active: RemoteOK, WeWorkRemotely, Remotive, WorkingNomads, Jobicy, Himalayas. LinkedIn RSS + Indeed RSS ship disabled (see Gotchas). Each adapter implements `BaseJobSource` from `src/sources/base.py` and emits `Job` models.
 2. **Persist + dedupe** — `src/db/client.persist_new_jobs` batches one SELECT (existence check on `(source, external_id)`) then one INSERT of the remainder.
 3. **Score** — `src/scoring/scorer.score_jobs`:
    - runs heuristic `prefilter_job` (pure Python, no LLM) — drops obvious non-matches into `skipped_jobs` with `skip_stage='prefilter'`.
@@ -46,8 +50,7 @@ The `integration` marker is defined in `pytest.ini` and excluded from the defaul
    - applies `compute_recency_delta(job.posted_at)` to the LLM's raw score, clamps to `[0, 100]`, persists `recency_bonus` + `age_days`.
    - `skip` verdicts and `blocked_citizen_only` auth statuses also land in `skipped_jobs` (with distinct `skip_stage` tags) on top of their `scored_jobs` row.
 4. **Write** — `src/writing/writer.write_all_matching` filters on `score >= MIN_SCORE_TO_NOTIFY` & verdict ≠ `skip` & auth ≠ `blocked_citizen_only`, generates a tailored `.docx` resume + cover letter per qualifying job (capped at `Semaphore(3)`), and upserts `applications` rows with `status='suggested'`.
-
-Block 4 (Telegram notify in `src/notify/`) is not yet wired into `main.py`.
+5. **Notify** — `src/notify/telegram.notify_all` loads every `applications` row with `status='suggested' AND notified_at IS NULL` (capped by `MAX_JOBS_PER_RUN`), sends an HTML summary via `sendMessage` + the resume/cover `.docx` via `sendDocument`, and stamps `notified_at = NOW()` on success so the same row is never re-delivered on the next cron. Soft failure — HTTP errors are logged but don't abort the run.
 
 ### LLM fallback chain
 
@@ -59,7 +62,7 @@ Core of Block 3.5. All LLM calls go through `src/utils/llm.py`'s `chat()` / `cha
 
 ### Database layer
 
-`src/db/client.py` is the single entry point for all Supabase I/O — models in / models out (Pydantic v2 in `src/models/job.py`). Schema lives in `src/db/schema.sql`; incremental migrations in `src/db/migrations/NNN_*.sql` (apply via Supabase SQL editor or Supabase MCP). Current migrations: `002_skipped_jobs`, `003_llm_calls`, `004_recency`.
+`src/db/client.py` is the single entry point for all Supabase I/O — models in / models out (Pydantic v2 in `src/models/job.py`). Schema lives in `src/db/schema.sql`; incremental migrations in `src/db/migrations/NNN_*.sql` (apply via Supabase SQL editor or Supabase MCP). Current migrations: `002_skipped_jobs`, `003_llm_calls`, `004_recency`, `005_notified_at`.
 
 Tables: `jobs` · `scored_jobs` · `applications` · `skipped_jobs` · `runs` · `llm_calls`.
 
@@ -77,7 +80,8 @@ Generated `.docx` files land in `data/outputs/{run_id_short}/` as `{company}_{ti
 
 ## Gotchas
 
-- **Supabase client** is pinned to `2.28.3` — older `2.10.x` hardcodes a JWT regex that rejects newer `sb_secret_*` keys.
+- **Supabase client** is pinned to `2.28.3` — older `2.10.x` hardcodes a JWT regex that rejects newer `sb_secret_*` keys. `pydantic` must be `>=2.11.7` to satisfy `supabase`'s transitive `realtime 2.28.3` dep — don't re-pin it lower.
+- **LinkedIn + Indeed RSS adapters are disabled** (`enabled=False` in `config/sources.py`). Neither ever produced a row in this project's lifetime: LinkedIn returns empty RSS (bot detection) and Indeed returns 403 Forbidden (UA blocking). The config + queries are preserved so a future proxy / Publisher-API implementation can flip `enabled` back without re-deriving them.
 - **Jobicy** adapter: do **not** add an `industry=` query param — the endpoint 400s on it. The adapter retries with zero params on an unexpected 400 for resilience.
 - **Prefilter is strict (junior-only).** Hard-rejects any title containing senior / sr / lead / manager / mid-level / intermediate, plus the original staff / principal / director / VP / head-of / chief, plus 7+ years in title, domain blocklist (nursing, sales, customer success, business development, medical coding, performance marketing, crypto trading, L&D, etc.), stack mismatches (iOS / Unity / firmware / mechanical / hardware), and `allows_canada=False`. The `seniority_hint` soft-flag path from Block 3.5 is gone — `_HARD_TITLE_RE` uses word boundaries so "seniority" / "leadership" / "managerial" are safe false-positive cases. When **loosening** prefilter rules that already dropped rows, run `python -m src.main rescore` to re-evaluate the `skipped_jobs` backlog.
 - **`ScoredJob.model`** column is stamped with `f"{resp.provider}:{resp.model}"` from the actual backend that answered — not the first provider in the chain — so the scorer uses `chat_with_meta()` to get that metadata back.
