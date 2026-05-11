@@ -1,8 +1,9 @@
 """Prefilter unit tests — pure Python, no LLM or network.
 
-Tightened 2026-04-24: every title at or above mid (senior, sr, lead, manager,
-mid-level, intermediate) is a hard reject. The Block 3.5 soft-flag path is
-gone — nothing ambiguous survives the prefilter anymore.
+Tightened 2026-04-25: every title at or above mid (senior, sr, lead, manager,
+mid-level, intermediate), explicit 3+ years requirement, and paid-source job
+is a hard reject. The Block 3.5 soft-flag path is gone — nothing ambiguous
+survives the prefilter anymore.
 """
 from __future__ import annotations
 
@@ -18,7 +19,7 @@ def _job(**overrides) -> Job:
         "company": "Test Co",
         "description": "Looking for a data analyst with SQL and Python.",
         "url": "https://example.com/job/123",
-        "allows_canada": True,
+        "allows_target_region": True,
     }
     base.update(overrides)
     return Job(**base)
@@ -51,15 +52,22 @@ def test_prefilter_accepts_intern():
     assert pf.should_score is True
 
 
-def test_prefilter_allows_canada_null_passes():
-    pf = prefilter_job(_job(allows_canada=None), profile={})
+def test_prefilter_allows_target_region_null_passes():
+    pf = prefilter_job(_job(allows_target_region=None), profile={})
     assert pf.should_score is True
 
 
-def test_prefilter_5_years_soft():
-    # 5+ years still passes; only 7+ in title hard-rejects. Scorer rubric
-    # caps these at 65.
+def test_prefilter_rejects_5_years_in_title():
     pf = prefilter_job(_job(title="Data Analyst - 5+ years"), profile={})
+    assert pf.should_score is False
+    assert "years" in (pf.skip_reason or "").lower()
+
+
+def test_prefilter_allows_low_experience_range():
+    pf = prefilter_job(
+        _job(description="Entry-level role. Looking for 0-2 years of SQL experience."),
+        profile={},
+    )
     assert pf.should_score is True
 
 
@@ -164,9 +172,36 @@ def test_prefilter_still_rejects_principal():
     assert "principal" in (pf.skip_reason or "").lower()
 
 
+def test_prefilter_rejects_level_ii():
+    pf = prefilter_job(_job(title="Data Analyst II"), profile={})
+    assert pf.should_score is False
+    assert "level" in (pf.skip_reason or "").lower()
+
+
 # ---------------------------------------------------------------------------
 # Hard rejects — years / geography / stack / domain
 # ---------------------------------------------------------------------------
+def test_prefilter_3_years_description_reject():
+    pf = prefilter_job(
+        _job(description="Must have 3+ years of professional analytics experience."),
+        profile={},
+    )
+    assert pf.should_score is False
+    assert "years" in (pf.skip_reason or "").lower()
+
+
+def test_prefilter_senior_description_reject():
+    pf = prefilter_job(
+        _job(
+            title="Data Analyst",
+            description="We are hiring a senior data analyst for SQL reporting.",
+        ),
+        profile={},
+    )
+    assert pf.should_score is False
+    assert "senior" in (pf.skip_reason or "").lower()
+
+
 def test_prefilter_8_years_reject():
     pf = prefilter_job(_job(title="Data Analyst - 8 years experience"), profile={})
     assert pf.should_score is False
@@ -178,10 +213,10 @@ def test_prefilter_10_years_reject():
     assert pf.should_score is False
 
 
-def test_prefilter_rejects_us_only():
-    pf = prefilter_job(_job(allows_canada=False), profile={})
+def test_prefilter_rejects_outside_target_regions():
+    pf = prefilter_job(_job(allows_target_region=False), profile={})
     assert pf.should_score is False
-    assert "canada" in (pf.skip_reason or "").lower()
+    assert "target regions" in (pf.skip_reason or "").lower()
 
 
 def test_prefilter_rejects_mobile():
@@ -226,6 +261,13 @@ def test_prefilter_rejects_crypto_trader():
 def test_prefilter_rejects_learning_and_development():
     pf = prefilter_job(_job(title="Learning and Development Specialist"), profile={})
     assert pf.should_score is False
+
+
+def test_prefilter_rejects_paid_sources():
+    for source in ("wwr", "remotive", "working_nomads"):
+        pf = prefilter_job(_job(source=source), profile={})
+        assert pf.should_score is False
+        assert "paid" in (pf.skip_reason or "").lower()
 
 
 # ---------------------------------------------------------------------------

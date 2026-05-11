@@ -13,8 +13,8 @@ from src.sources.base import (
     JobSourceAdapter,
     clean_html,
     hash_url,
-    is_canada_friendly,
     is_data_relevant,
+    is_in_target_region,
 )
 from src.utils.logger import get_logger
 
@@ -97,8 +97,8 @@ class WorkingNomadsAdapter(JobSourceAdapter):
             return None
 
         location = item.get("location") or ""
-        allows_canada = is_canada_friendly(location, description, tags)
-        if allows_canada is False:
+        allows_target_region = is_in_target_region(location, description, tags)
+        if allows_target_region is False:
             return None
 
         posted_at: datetime | None = None
@@ -118,7 +118,7 @@ class WorkingNomadsAdapter(JobSourceAdapter):
             company=(item.get("company_name") or "Unknown").strip(),
             location=location or None,
             is_remote=True,
-            allows_canada=allows_canada,
+            allows_target_region=allows_target_region,
             salary_min=None,
             salary_max=None,
             salary_currency=None,

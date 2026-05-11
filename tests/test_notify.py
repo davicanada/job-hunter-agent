@@ -38,7 +38,7 @@ def _make_app(
         company=company,
         description="x",
         url=url,
-        allows_canada=True,
+        allows_target_region=True,
     )
     sj = ScoredJob(
         id=uuid4(),

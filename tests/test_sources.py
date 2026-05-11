@@ -11,52 +11,70 @@ from src.models.job import Job
 from src.sources.base import (
     clean_html,
     hash_url,
-    is_canada_friendly,
     is_data_relevant,
+    is_in_target_region,
     parse_salary,
 )
 
 # ---------------------------------------------------------------------------
-# is_canada_friendly
+# is_in_target_region (Canada / USA / Europe)
 # ---------------------------------------------------------------------------
-def test_is_canada_friendly_worldwide():
-    assert is_canada_friendly("Worldwide", None, None) is True
+def test_is_in_target_region_worldwide():
+    assert is_in_target_region("Worldwide", None, None) is True
 
 
-def test_is_canada_friendly_canada():
-    assert is_canada_friendly("Canada only", None, None) is True
+def test_is_in_target_region_canada():
+    assert is_in_target_region("Canada only", None, None) is True
 
 
-def test_is_canada_friendly_us_only_blocked():
-    assert is_canada_friendly("US only", None, None) is False
+def test_is_in_target_region_us_only_now_accepted():
+    # USA is in scope as a target region — postings limited to the US should
+    # pass the regional filter. The LLM scorer judges work-authorization fit.
+    assert is_in_target_region("US only", None, None) is True
 
 
-def test_is_canada_friendly_unclear():
-    assert is_canada_friendly("Remote", None, None) is None
+def test_is_in_target_region_europe_remote():
+    assert is_in_target_region("Remote - Europe", None, None) is True
 
 
-def test_is_canada_friendly_blocked_beats_friendly():
-    # "Worldwide" would match friendly, but "US only" is also present.
+def test_is_in_target_region_uk_only_now_accepted():
+    assert is_in_target_region("UK only", None, None) is True
+
+
+def test_is_in_target_region_blocks_apac_only():
+    assert is_in_target_region("APAC only", None, None) is False
+
+
+def test_is_in_target_region_blocks_india_only():
+    assert is_in_target_region("Remote - India only", None, None) is False
+
+
+def test_is_in_target_region_unclear():
+    assert is_in_target_region("Remote", None, None) is None
+
+
+def test_is_in_target_region_blocked_beats_friendly():
+    # "Worldwide" would match friendly, but "India only" is also present.
     assert (
-        is_canada_friendly(
+        is_in_target_region(
             "Remote worldwide",
-            description="Must be based in the US",
+            description="Must be based in India",
             tags=[],
         )
         is False
     )
 
 
-def test_is_canada_friendly_reads_description_and_tags():
+def test_is_in_target_region_reads_description_and_tags():
     assert (
-        is_canada_friendly(
+        is_in_target_region(
             location="",
             description="Open to candidates across North America",
             tags=[],
         )
         is True
     )
-    assert is_canada_friendly("", "", ["remote-canada"]) is True
+    assert is_in_target_region("", "", ["remote-canada"]) is True
 
 
 # ---------------------------------------------------------------------------
@@ -87,6 +105,10 @@ def test_is_data_relevant_description_fallback():
         )
         is True
     )
+
+
+def test_is_data_relevant_excel():
+    assert is_data_relevant("Excel Specialist", []) is True
 
 
 # ---------------------------------------------------------------------------
@@ -310,7 +332,15 @@ def test_jobicy_config_has_no_industry_param():
     assert jobicy is not None
     params = jobicy.get("query_params") or {}
     assert "industry" not in params
-    assert params.get("geo") == "canada,anywhere"
+    assert params.get("geo") == "canada,usa,europe,anywhere"
+
+
+def test_paid_job_seeker_sources_are_disabled():
+    from config.sources import PAID_TO_APPLY_SOURCES, SOURCES
+
+    by_name = {s.get("name"): s for s in SOURCES}
+    for source in PAID_TO_APPLY_SOURCES:
+        assert by_name[source].get("enabled") is False
 
 
 # ---------------------------------------------------------------------------

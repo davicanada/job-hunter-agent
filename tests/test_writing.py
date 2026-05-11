@@ -24,7 +24,7 @@ def _job(**overrides) -> Job:
         "company": "Shopify Inc.",
         "description": "Looking for a data analyst with SQL and Python.",
         "url": "https://example.com/job/123",
-        "allows_canada": True,
+        "allows_target_region": True,
     }
     base.update(overrides)
     return Job(**base)

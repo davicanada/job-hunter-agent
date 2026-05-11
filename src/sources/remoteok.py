@@ -12,8 +12,8 @@ from src.models.job import Job
 from src.sources.base import (
     JobSourceAdapter,
     clean_html,
-    is_canada_friendly,
     is_data_relevant,
+    is_in_target_region,
 )
 from src.utils.logger import get_logger
 
@@ -83,8 +83,8 @@ class RemoteOKAdapter(JobSourceAdapter):
             return None
 
         location = item.get("location", "") or ""
-        allows_canada = is_canada_friendly(location, description, tags)
-        if allows_canada is False:
+        allows_target_region = is_in_target_region(location, description, tags)
+        if allows_target_region is False:
             return None
 
         company = item.get("company") or "Unknown"
@@ -114,7 +114,7 @@ class RemoteOKAdapter(JobSourceAdapter):
             company=str(company).strip(),
             location=location or None,
             is_remote=True,
-            allows_canada=allows_canada,
+            allows_target_region=allows_target_region,
             salary_min=salary_min,
             salary_max=salary_max,
             salary_currency=salary_currency,

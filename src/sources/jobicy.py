@@ -12,8 +12,8 @@ from src.models.job import Job
 from src.sources.base import (
     JobSourceAdapter,
     clean_html,
-    is_canada_friendly,
     is_data_relevant,
+    is_in_target_region,
 )
 from src.utils.logger import get_logger
 
@@ -114,8 +114,8 @@ class JobicyAdapter(JobSourceAdapter):
             return None
 
         job_geo = item.get("jobGeo") or ""
-        allows_canada = is_canada_friendly(job_geo, description, list(industries))
-        if allows_canada is False:
+        allows_target_region = is_in_target_region(job_geo, description, list(industries))
+        if allows_target_region is False:
             return None
 
         url = item.get("url") or ""
@@ -153,7 +153,7 @@ class JobicyAdapter(JobSourceAdapter):
             company=(item.get("companyName") or "Unknown").strip(),
             location=job_geo or None,
             is_remote=True,
-            allows_canada=allows_canada,
+            allows_target_region=allows_target_region,
             salary_min=salary_min,
             salary_max=salary_max,
             salary_currency=salary_currency,

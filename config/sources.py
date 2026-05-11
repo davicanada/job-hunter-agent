@@ -31,6 +31,13 @@ class SourceConfig(TypedDict, total=False):
     location: str
 
 
+PAID_TO_APPLY_SOURCES: dict[SourceName, str] = {
+    "wwr": "We Work Remotely now gates unlimited applications behind Pro",
+    "remotive": "Remotive uses paid job-seeker access for its full remote-jobs database",
+    "working_nomads": "Working Nomads uses a paid premium subscription for expanded job access",
+}
+
+
 SOURCES: list[SourceConfig] = [
     {
         "name": "remoteok",
@@ -40,10 +47,12 @@ SOURCES: list[SourceConfig] = [
         "user_agent": "JobHunterAgent/1.0 (personal job search tool)",
     },
     {
+        # Disabled 2026-04-25: user hit a job-seeker paywall / Pro flow while
+        # applying. Keep the adapter code around, but do not fetch WWR jobs.
         "name": "wwr",
         "type": "rss",
         "url": "https://weworkremotely.com/categories/remote-full-stack-programming-jobs.rss",
-        "enabled": True,
+        "enabled": False,
         "extra_feeds": [
             "https://weworkremotely.com/categories/remote-back-end-programming-jobs.rss",
             "https://weworkremotely.com/categories/remote-devops-sysadmin-jobs.rss",
@@ -51,17 +60,22 @@ SOURCES: list[SourceConfig] = [
         ],
     },
     {
+        # Disabled 2026-04-25: paid job-seeker access is not compatible with
+        # this pipeline's "send resume without subscriptions" constraint.
         "name": "remotive",
         "type": "api_json",
         "url": "https://remotive.com/api/remote-jobs",
-        "enabled": True,
+        "enabled": False,
         "category_filter": ["software-dev", "data"],
     },
     {
+        # Disabled 2026-04-25: Working Nomads promotes a paid job-seeker
+        # subscription / premium access path, so avoid routing applications
+        # there.
         "name": "working_nomads",
         "type": "api_json",
         "url": "https://www.workingnomads.com/api/exposed_jobs/",
-        "enabled": True,
+        "enabled": False,
     },
     {
         # Block 3.5: ``industry=data-analytics,dev`` caused 400s on every call.
@@ -72,7 +86,7 @@ SOURCES: list[SourceConfig] = [
         "enabled": True,
         "query_params": {
             "count": 50,
-            "geo": "canada,anywhere",
+            "geo": "canada,usa,europe,anywhere",
         },
     },
     {
@@ -128,28 +142,77 @@ SOURCES: list[SourceConfig] = [
 ]
 
 
-CANADA_FRIENDLY_KEYWORDS: list[str] = [
+TARGET_REGION_KEYWORDS: list[str] = [
+    # Canada
     "canada",
+    "remote - canada",
+    # USA — multi-char only; bare "us" / "uk" / "eu" would create false
+    # positives via substring match (e.g. "must", "duke", "queue").
+    "united states",
+    "usa",
+    "u.s.",
+    "u.s.a.",
+    "us only",
+    "us-based",
+    "us based",
+    "us citizens",
+    "remote - us",
+    "remote us",
+    "remote (us)",
+    # Europe / EMEA
+    "europe",
+    "european",
+    "emea",
+    "united kingdom",
+    "uk only",
+    "uk residents",
+    "europe only",
+    "eu only",
+    "eu + uk",
+    "ireland",
+    "germany",
+    "france",
+    "netherlands",
+    "spain",
+    "portugal",
+    "poland",
+    "sweden",
+    "denmark",
+    "finland",
+    "norway",
+    "belgium",
+    "italy",
+    "remote - europe",
+    "anywhere in europe",
+    # Cross-region / global
     "worldwide",
     "anywhere",
-    "remote - canada",
     "north america",
     "americas",
     "global",
     "emea + americas",
+    "latam + emea + americas",
 ]
 
-CANADA_BLOCKED_KEYWORDS: list[str] = [
-    "us only",
-    "usa only",
-    "united states only",
-    "uk only",
-    "europe only",
-    "eu only",
-    "us-based",
-    "must be based in the us",
-    "us citizens only",
-    "uk residents",
+# Restrictions that genuinely exclude all three target regions (Canada, USA,
+# Europe). Postings limited to a single target region (e.g. "US only",
+# "Europe only") are NOT blocked here — they're in scope and the LLM scorer
+# decides on auth_status based on Davi's actual work authorization.
+TARGET_REGION_BLOCKED_KEYWORDS: list[str] = [
+    "india only",
+    "apac only",
+    "latam only",
+    "latin america only",
+    "brazil only",
+    "mexico only",
+    "australia only",
+    "anz only",
+    "singapore only",
+    "japan only",
+    "africa only",
+    "philippines only",
+    "must be based in india",
+    "must reside in latin america",
 ]
 
 DATA_RELEVANT_KEYWORDS: list[str] = [
@@ -159,6 +222,7 @@ DATA_RELEVANT_KEYWORDS: list[str] = [
     "sql",
     "python",
     "power bi",
+    "excel",
     "tableau",
     "etl",
     "bi ",
