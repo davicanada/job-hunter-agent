@@ -7,9 +7,9 @@ import re
 from abc import ABC, abstractmethod
 
 from config.sources import (
-    CANADA_BLOCKED_KEYWORDS,
-    CANADA_FRIENDLY_KEYWORDS,
     DATA_RELEVANT_KEYWORDS,
+    TARGET_REGION_BLOCKED_KEYWORDS,
+    TARGET_REGION_KEYWORDS,
 )
 from src.models.job import Job
 
@@ -30,14 +30,17 @@ class JobSourceAdapter(ABC):
         ...
 
 
-def is_canada_friendly(
+def is_in_target_region(
     location: str | None,
     description: str | None,
     tags: list[str] | None,
 ) -> bool | None:
-    """True if the posting is Canada-friendly, False if explicitly blocked, None if unclear.
+    """True if the posting is in scope for the target regions (Canada, USA,
+    Europe), False if explicitly limited to a region we exclude, None if unclear.
 
-    Blocked keywords beat friendly keywords (e.g. "Remote worldwide, US only" → False).
+    Blocked keywords beat friendly keywords (e.g. "Remote worldwide, India only"
+    → False). Postings limited to a single target region (US only, EU only)
+    are accepted here — auth_status is the LLM scorer's job, not this filter.
     """
     blob_parts: list[str] = []
     if location:
@@ -50,10 +53,10 @@ def is_canada_friendly(
     if not blob:
         return None
 
-    blocked = any(kw in blob for kw in CANADA_BLOCKED_KEYWORDS)
+    blocked = any(kw in blob for kw in TARGET_REGION_BLOCKED_KEYWORDS)
     if blocked:
         return False
-    friendly = any(kw in blob for kw in CANADA_FRIENDLY_KEYWORDS)
+    friendly = any(kw in blob for kw in TARGET_REGION_KEYWORDS)
     if friendly:
         return True
     return None

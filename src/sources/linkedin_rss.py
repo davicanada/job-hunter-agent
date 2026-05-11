@@ -21,8 +21,8 @@ from src.models.job import Job
 from src.sources.base import (
     JobSourceAdapter,
     clean_html,
-    is_canada_friendly,
     is_data_relevant,
+    is_in_target_region,
 )
 from src.utils.logger import get_logger
 
@@ -168,8 +168,8 @@ class LinkedInRSSAdapter(JobSourceAdapter):
         if not is_data_relevant(title, [], description):
             return None
 
-        allows_canada = is_canada_friendly(location, description, tags=[])
-        if allows_canada is False:
+        allows_target_region = is_in_target_region(location, description, tags=[])
+        if allows_target_region is False:
             return None
 
         link = item.get("link", "")
@@ -191,7 +191,7 @@ class LinkedInRSSAdapter(JobSourceAdapter):
             company=company.strip() or "Unknown (LinkedIn)",
             location=location,
             is_remote=True,
-            allows_canada=allows_canada,
+            allows_target_region=allows_target_region,
             salary_min=None,
             salary_max=None,
             salary_currency=None,

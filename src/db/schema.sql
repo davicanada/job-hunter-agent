@@ -16,7 +16,7 @@ CREATE TABLE IF NOT EXISTS jobs (
     company         TEXT NOT NULL,
     location        TEXT,
     is_remote       BOOLEAN NOT NULL DEFAULT TRUE,
-    allows_canada   BOOLEAN,
+    allows_target_region BOOLEAN,
     salary_min      INT,
     salary_max      INT,
     salary_currency TEXT,

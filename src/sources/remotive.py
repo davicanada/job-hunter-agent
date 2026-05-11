@@ -12,8 +12,8 @@ from src.models.job import Job
 from src.sources.base import (
     JobSourceAdapter,
     clean_html,
-    is_canada_friendly,
     is_data_relevant,
+    is_in_target_region,
     parse_salary,
 )
 from src.utils.logger import get_logger
@@ -109,8 +109,8 @@ class RemotiveAdapter(JobSourceAdapter):
             return None
 
         location = item.get("candidate_required_location") or ""
-        allows_canada = is_canada_friendly(location, description, tags)
-        if allows_canada is False:
+        allows_target_region = is_in_target_region(location, description, tags)
+        if allows_target_region is False:
             return None
 
         url = item.get("url") or ""
@@ -137,7 +137,7 @@ class RemotiveAdapter(JobSourceAdapter):
             company=(item.get("company_name") or "Unknown").strip(),
             location=location or None,
             is_remote=True,
-            allows_canada=allows_canada,
+            allows_target_region=allows_target_region,
             salary_min=salary_min,
             salary_max=salary_max,
             salary_currency=salary_currency,

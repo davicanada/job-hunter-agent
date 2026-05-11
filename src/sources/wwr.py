@@ -15,8 +15,8 @@ from src.sources.base import (
     JobSourceAdapter,
     clean_html,
     hash_url,
-    is_canada_friendly,
     is_data_relevant,
+    is_in_target_region,
 )
 from src.utils.logger import get_logger
 
@@ -114,10 +114,10 @@ class WWRAdapter(JobSourceAdapter):
         if not is_data_relevant(title, [], description):
             return None
 
-        allows_canada = is_canada_friendly(
+        allows_target_region = is_in_target_region(
             location=None, description=description, tags=[]
         )
-        if allows_canada is False:
+        if allows_target_region is False:
             return None
 
         link = item.get("link", "")
@@ -139,7 +139,7 @@ class WWRAdapter(JobSourceAdapter):
             company=company,
             location=None,
             is_remote=True,
-            allows_canada=allows_canada,
+            allows_target_region=allows_target_region,
             salary_min=None,
             salary_max=None,
             salary_currency=None,

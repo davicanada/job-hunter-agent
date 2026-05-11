@@ -38,7 +38,7 @@ class Job(BaseModel):
     company: str
     location: str | None = None
     is_remote: bool = True
-    allows_canada: bool | None = None
+    allows_target_region: bool | None = None
     salary_min: int | None = None
     salary_max: int | None = None
     salary_currency: str | None = None

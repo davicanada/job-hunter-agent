@@ -78,7 +78,7 @@ def _job_payload_for_prompt(job: Job) -> dict[str, Any]:
         "company": job.company,
         "location": job.location,
         "is_remote": job.is_remote,
-        "allows_canada": job.allows_canada,
+        "allows_target_region": job.allows_target_region,
         "employment_type": job.employment_type,
         "salary_min": job.salary_min,
         "salary_max": job.salary_max,
@@ -250,10 +250,9 @@ async def score_single_job(
 def reconcile_skipped_jobs(limit: int = 500) -> ReconcileResult:
     """Re-evaluate ``prefilter``-skipped jobs against the *current* prefilter.
 
-    Block 3.5 softened several prefilter rules (5+ years is no longer a hard
-    reject, "senior" is a soft flag). Rows written under the old rules are
-    stale — this helper reruns the current prefilter and, for anything now
-    accepted, deletes the ``skipped_jobs`` entry so the caller can feed the
+    Rows written under older rules can become stale after source or seniority
+    policy changes. This helper reruns the current prefilter and, for anything
+    now accepted, deletes the ``skipped_jobs`` entry so the caller can feed the
     job back into ``score_jobs``.
 
     Returns a ``ReconcileResult`` with the list of re-queued ``job_id``s.

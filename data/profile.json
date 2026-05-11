@@ -30,12 +30,13 @@
   "disqualifiers": {
     "security_clearance_required": true,
     "citizen_only": true,
-    "us_only": true,
+    "us_only": false,
     "on_site_required": true
   },
   "preferences": {
     "remote_only": true,
-    "country": "Canada",
+    "countries": ["Canada", "USA", "Europe"],
+    "regions_of_interest": ["Canada", "USA", "Europe"],
     "employment_types_accepted": ["full-time", "part-time", "contract", "temporary", "internship"],
     "salary_min_cad": null,
     "provinces_ok": "any"
