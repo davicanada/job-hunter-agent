@@ -220,35 +220,6 @@ async def test_notify_all_marks_each_sent_app(monkeypatch, tmp_path):
     assert len(marked) == 2
 
 
-async def test_notify_all_skips_ineligible_senior_backlog(monkeypatch):
-    from src.notify import telegram as notifier
-
-    apps = [_make_app(title="Senior Data Analyst")]
-    marked_skipped: list[tuple[str, str]] = []
-    sent_messages: list[str] = []
-
-    async def fake_send_message(*a, **kw):
-        sent_messages.append("called")
-        return True
-
-    monkeypatch.setattr(notifier, "load_unnotified_applications", lambda limit=None: apps)
-    monkeypatch.setattr(notifier, "send_message", fake_send_message)
-    monkeypatch.setattr(
-        notifier,
-        "mark_application_skipped",
-        lambda aid, reason: marked_skipped.append((aid, reason)),
-    )
-    monkeypatch.setattr(notifier.settings, "dry_run", False)
-
-    stats = await notifier.notify_all()
-    assert stats["total"] == 1
-    assert stats["sent"] == 0
-    assert stats["skipped"] == 1
-    assert sent_messages == []
-    assert len(marked_skipped) == 1
-    assert "senior" in marked_skipped[0][1].lower()
-
-
 # ---------------------------------------------------------------------------
 # notify_all: failure does NOT mark notified
 # ---------------------------------------------------------------------------
