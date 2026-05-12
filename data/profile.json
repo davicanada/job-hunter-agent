@@ -9,11 +9,12 @@
     "website": "davianalyst.com"
   },
   "work_authorization": {
+    "citizenship": "Brazil",
     "current_status": "work_permit",
     "current_permit_expires": "2026-11-19",
     "pr_status": "pr_approved_copr_pending",
     "expected_pr_date": "2026-Q2",
-    "resume_statement": "Authorized to work in Canada — permanent residence approved, COPR pending."
+    "resume_statement": "Brazilian citizen; authorized to work in Canada — permanent residence approved, COPR pending."
   },
   "languages": [
     "English (Professional / C1)",
@@ -35,8 +36,8 @@
   },
   "preferences": {
     "remote_only": true,
-    "countries": ["Canada", "USA", "Europe"],
-    "regions_of_interest": ["Canada", "USA", "Europe"],
+    "countries": ["Canada", "USA", "Europe", "Brazil"],
+    "regions_of_interest": ["Canada", "USA", "Europe", "Brazil"],
     "employment_types_accepted": ["full-time", "part-time", "contract", "temporary", "internship"],
     "salary_min_cad": null,
     "provinces_ok": "any"

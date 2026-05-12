@@ -1,6 +1,6 @@
 # Job Hunter Agent
 
-An automated job-hunting pipeline that scans remote-Canada data jobs three times a day on GitHub Actions, scores each posting against Davi Almeida's profile with a multi-provider LLM fallback chain (Gemini → Groq → OpenRouter), and sends the top matches to Telegram along with a tailored résumé (`.docx`) and cover letter. Every run is persisted to Supabase so nothing is scored twice.
+An automated job-hunting pipeline that scans remote data jobs across Canada, the USA, Europe, and Brazil three times a day on GitHub Actions, scores each posting against Davi Almeida's profile with a multi-provider LLM fallback chain (Gemini → Groq → OpenRouter), and sends the top matches to Telegram along with a tailored résumé (`.docx`) and cover letter. Every run is persisted to Supabase so nothing is scored twice.
 
 ## Architecture
 

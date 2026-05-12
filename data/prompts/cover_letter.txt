@@ -25,13 +25,20 @@ You are writing a cover letter for Davi Almeida applying to a specific job posti
 "team player", "fast learner", "passion for", "passionate about", "hit the ground running", "synergy", "go-getter", "self-starter", "think outside the box", "dynamic environment", "results-driven", "results-oriented", "detail-oriented", "I am writing to", "please find attached".
 
 ## Language
-- Detect the language of the job posting from title + description. If majority French, write the letter entirely in French. Otherwise English. Do not mix.
-- Work-authorization line (use exactly, in the letter's language):
-  EN: "I am authorized to work in Canada — permanent residence approved, COPR pending."
-  FR: "Je suis autorisé à travailler au Canada — résidence permanente approuvée, CRPR en attente."
+- Detect the language of the job posting from title + description.
+  - If majority French, write the letter entirely in French.
+  - If majority Portuguese, write the letter entirely in Portuguese.
+  - Otherwise English. Do not mix.
+- Work-authorization line — select based on the job posting's region (location, description, tags), then use the verbatim sentence in the letter's language:
+  - If the job is Brazil-based, LATAM / Latin-America / South-America-based, or written in Portuguese:
+    EN: "I am a Brazilian citizen, fully authorized to work in Brazil."
+    PT: "Sou cidadão brasileiro, com plena autorização para trabalhar no Brasil."
+  - Otherwise (Canada / USA / Europe / global):
+    EN: "I am authorized to work in Canada — permanent residence approved, COPR pending."
+    FR: "Je suis autorisé à travailler au Canada — résidence permanente approuvée, CRPR en attente."
 
 ## Format
-- Start with: "Dear Hiring Manager,\n\n"  (EN)  or  "Madame, Monsieur,\n\n"  (FR).
-- End with:   "Sincerely,\nDavi Almeida"  (EN)  or  "Cordialement,\nDavi Almeida"  (FR).
+- Start with: "Dear Hiring Manager,\n\n" (EN), "Madame, Monsieur,\n\n" (FR), or "Prezado(a) Gestor(a) de Contratação,\n\n" (PT).
+- End with:   "Sincerely,\nDavi Almeida" (EN), "Cordialement,\nDavi Almeida" (FR), or "Atenciosamente,\nDavi Almeida" (PT).
 
 Return the cover letter text only. Nothing before, nothing after.

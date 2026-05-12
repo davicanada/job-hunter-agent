@@ -184,6 +184,20 @@ TARGET_REGION_KEYWORDS: list[str] = [
     "italy",
     "remote - europe",
     "anywhere in europe",
+    # Brazil / LATAM (Davi holds Brazilian citizenship)
+    "brazil",
+    "brasil",
+    "remote - brazil",
+    "remote brazil",
+    "brazil based",
+    "brazil-based",
+    "brazilian",
+    "latam",
+    "latin america",
+    "south america",
+    "south american",
+    "remote - latam",
+    "anywhere in latam",
     # Cross-region / global
     "worldwide",
     "anywhere",
@@ -194,16 +208,15 @@ TARGET_REGION_KEYWORDS: list[str] = [
     "latam + emea + americas",
 ]
 
-# Restrictions that genuinely exclude all three target regions (Canada, USA,
-# Europe). Postings limited to a single target region (e.g. "US only",
-# "Europe only") are NOT blocked here — they're in scope and the LLM scorer
-# decides on auth_status based on Davi's actual work authorization.
+# Restrictions that genuinely exclude all four target regions (Canada, USA,
+# Europe, Brazil). Postings limited to a single target region (e.g. "US only",
+# "Brazil only", "Europe only") are NOT blocked here — they're in scope and
+# the LLM scorer decides on auth_status based on Davi's actual citizenship
+# and work authorization. LATAM/Latin-America-only postings are accepted
+# because Brazil is part of LATAM and Davi is a Brazilian citizen.
 TARGET_REGION_BLOCKED_KEYWORDS: list[str] = [
     "india only",
     "apac only",
-    "latam only",
-    "latin america only",
-    "brazil only",
     "mexico only",
     "australia only",
     "anz only",
@@ -212,7 +225,6 @@ TARGET_REGION_BLOCKED_KEYWORDS: list[str] = [
     "africa only",
     "philippines only",
     "must be based in india",
-    "must reside in latin america",
 ]
 
 DATA_RELEVANT_KEYWORDS: list[str] = [

@@ -17,7 +17,7 @@ from src.sources.base import (
 )
 
 # ---------------------------------------------------------------------------
-# is_in_target_region (Canada / USA / Europe)
+# is_in_target_region (Canada / USA / Europe / Brazil)
 # ---------------------------------------------------------------------------
 def test_is_in_target_region_worldwide():
     assert is_in_target_region("Worldwide", None, None) is True
@@ -47,6 +47,31 @@ def test_is_in_target_region_blocks_apac_only():
 
 def test_is_in_target_region_blocks_india_only():
     assert is_in_target_region("Remote - India only", None, None) is False
+
+
+def test_is_in_target_region_brazil_keyword_accepted():
+    # Brazil is in scope; Davi holds Brazilian citizenship.
+    assert is_in_target_region("Remote - Brazil", None, None) is True
+
+
+def test_is_in_target_region_brazil_only_now_accepted():
+    # Brazil-only postings used to be blocked under Canada/USA/Europe-only
+    # scope. After the 2026-05-11 broadening they're in scope.
+    assert is_in_target_region("Brazil only, must be Brazilian", None, None) is True
+
+
+def test_is_in_target_region_latam_only_now_accepted():
+    # LATAM postings cover Brazil; Davi qualifies via Brazilian citizenship.
+    assert is_in_target_region("Remote - LATAM only", None, None) is True
+
+
+def test_is_in_target_region_south_america_accepted():
+    assert is_in_target_region("South America remote", None, None) is True
+
+
+def test_is_in_target_region_blocks_mexico_only_still_false():
+    # Mexico-only excludes Brazil and is still out of scope.
+    assert is_in_target_region("Mexico only", None, None) is False
 
 
 def test_is_in_target_region_unclear():

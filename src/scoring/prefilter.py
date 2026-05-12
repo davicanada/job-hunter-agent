@@ -9,9 +9,11 @@ description, senior role phrases in the description, paid-to-apply sources,
 and the existing domain / stack / geography blockers.
 
 Geography (2026-05-11): the target region was widened from Canada-only to
-Canada / USA / Europe. ``allows_target_region`` is False only when the posting
-is restricted to a region we exclude (APAC, LATAM, India only, etc.); the
-LLM scorer decides on actual auth_status case-by-case.
+Canada / USA / Europe / Brazil. LATAM / Latin-America / South-America
+postings are accepted because Davi is a Brazilian citizen and Brazil is
+part of LATAM. ``allows_target_region`` is False only when the posting is
+restricted to a region we still exclude (APAC, India-only, Mexico-only,
+etc.); the LLM scorer decides on actual auth_status case-by-case.
 
 Fields on ``PrefilterResult`` are preserved for scorer compatibility but
 ``seniority_hint`` and ``notes`` are always empty for accepted jobs.
@@ -159,7 +161,7 @@ def prefilter_job(job: Job, profile: dict) -> PrefilterResult:
     if job.allows_target_region is False:
         return PrefilterResult(
             should_score=False,
-            skip_reason="location: not in target regions (Canada/USA/Europe)",
+            skip_reason="location: not in target regions (Canada/USA/Europe/Brazil)",
         )
 
     hard_match = _HARD_TITLE_RE.search(title)
